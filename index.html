@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roast mon GitHub</title>
+<meta name="description" content="Tape ton pseudo GitHub et prends-toi un roast bien cuit : noms de repos douteux, pushs à 3h du matin, projets abandonnés… + ta carte de dev à partager et des duels entre potes.">
+<meta name="theme-color" content="#120c0a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Roast mon GitHub 🔥 — ton profil, grillé à point">
+<meta property="og:description" content="Tape ton pseudo, prends-toi un roast, défie tes potes en duel. Aucune connexion requise.">
+<meta property="og:image" content="https://cedricpoint.github.io/roast-mon-github/og.png">
+<meta property="og:url" content="https://cedricpoint.github.io/roast-mon-github/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120c0a; --bg2:#1d1512; --bg3:#2a1f1a; --line:#3a2b24; --ink:#fbefe6; --mute:#b49d90;
+  --fire:#ff5a1f; --fire2:#ffb21f; --ok:#5ee6a8; --blue:#6aa8ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"Bricolage Grotesque",system-ui,sans-serif;min-height:100dvh;overflow-x:hidden}
+body::before{content:"";position:fixed;left:-20%;right:-20%;bottom:-40vh;height:80vh;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 100%,rgba(255,90,31,.35),rgba(255,178,31,.08) 45%,transparent 70%);animation:glow 4s ease-in-out infinite alternate}
+@keyframes glow{to{transform:scaleY(1.15);opacity:.8}}
+main{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:36px 16px 60px}
+.mono{font-family:"JetBrains Mono",monospace}
+h1{font-weight:800;font-size:clamp(46px,13vw,88px);line-height:.92;letter-spacing:-.03em}
+h1 .f{background:linear-gradient(180deg,var(--fire2),var(--fire));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mute);font-size:19px;line-height:1.5;margin:18px 0 26px;max-width:44ch}
+.pill{display:inline-block;font:700 12px "JetBrains Mono";letter-spacing:.06em;text-transform:uppercase;color:var(--fire2);
+  border:1px solid var(--line);background:var(--bg2);padding:6px 10px;border-radius:99px;margin-bottom:18px}
+.screen{display:none;animation:in .45s cubic-bezier(.2,.8,.2,1)}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(16px)}}
+
+form{display:grid;gap:12px}
+.field{display:flex;align-items:center;background:var(--bg2);border:2px solid var(--line);border-radius:16px;padding:0 16px;transition:border-color .15s}
+.field:focus-within{border-color:var(--fire)}
+.field span{font:700 18px "JetBrains Mono";color:var(--mute)}
+.field input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--ink);font:700 19px "JetBrains Mono";padding:18px 8px}
+.vs-toggle{background:none;border:0;color:var(--mute);font:600 15px "Bricolage Grotesque";cursor:pointer;text-align:left;padding:2px}
+.vs-toggle b{color:var(--fire2)}
+.btn{appearance:none;border:0;cursor:pointer;font:800 19px "Bricolage Grotesque";padding:18px 24px;border-radius:16px;color:#1a0a03;
+  background:linear-gradient(180deg,var(--fire2),var(--fire));box-shadow:0 6px 0 #9c2f06,0 10px 40px rgba(255,90,31,.35);
+  transition:transform .08s,box-shadow .08s;display:inline-flex;gap:10px;align-items:center;justify-content:center;text-decoration:none}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #9c2f06}
+.btn.ghost{background:var(--bg2);color:var(--ink);border:2px solid var(--line);box-shadow:0 6px 0 #070504}
+.btn.ghost:active{box-shadow:0 1px 0 #070504}
+.btn.full{width:100%}
+.hint{color:var(--mute);font-size:14px;margin-top:4px}
+.try{margin-top:22px;color:var(--mute);font-size:15px}
+.try button{background:var(--bg2);border:1px solid var(--line);color:var(--ink);font:600 14px "JetBrains Mono";padding:6px 10px;border-radius:8px;cursor:pointer;margin:6px 6px 0 0}
+.try button:hover{border-color:var(--fire)}
+.err{margin-top:14px;padding:14px 16px;border-radius:14px;background:rgba(255,90,31,.1);border:1px solid var(--fire);font-weight:600;line-height:1.4}
+.err:empty{display:none}
+
+/* Chargement */
+.loading{text-align:center;padding:70px 0}
+.flame{font-size:84px;display:inline-block;animation:flick .25s infinite alternate;transform-origin:50% 100%}
+@keyframes flick{to{transform:scale(1.08,.94) rotate(3deg)}}
+.term{margin:28px auto 0;max-width:420px;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;
+  font:500 14px/1.8 "JetBrains Mono";color:var(--mute);min-height:140px}
+.term .ok{color:var(--ok)}
+
+/* Résultat */
+.head{display:flex;gap:16px;align-items:center}
+.head img{width:84px;height:84px;border-radius:50%;border:3px solid var(--fire);background:var(--bg3)}
+.head h2{font-size:clamp(28px,7vw,40px);font-weight:800;line-height:1.05;word-break:break-word}
+.head .login{color:var(--mute);font:600 15px "JetBrains Mono"}
+.cook{margin-top:22px;padding:18px;border-radius:18px;background:var(--bg2);border:2px solid var(--line)}
+.cook .lbl{font:700 12px "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.cook .lvl{font-size:30px;font-weight:800;margin:6px 0 12px}
+.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.meter i{height:12px;border-radius:99px;background:var(--bg3)}
+.meter i.on{background:linear-gradient(90deg,var(--fire2),var(--fire))}
+.meter-l{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;font:600 12px "JetBrains Mono";color:var(--mute);text-align:center}
+.roasts{display:grid;gap:12px;margin-top:22px}
+.roast{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--fire);border-radius:14px;padding:16px 16px 16px 18px;
+  font-size:18px;line-height:1.45;opacity:0;transform:translateX(-14px);animation:slide .5s cubic-bezier(.2,.8,.2,1) forwards}
+.roast .e{margin-right:6px}
+.roast.nice{border-left-color:var(--ok)}
+@keyframes slide{to{opacity:1;transform:none}}
+.sec{margin-top:30px}
+.sec h3{font:700 12px "JetBrains Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:10px}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat b{display:block;font-size:28px;font-weight:800}
+.stat span{color:var(--mute);font-size:14px}
+.langs{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--bg3)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font:600 13px "JetBrains Mono";color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.preview{width:100%;max-width:420px;display:block;margin:0 auto;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.share{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.sbtn{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:12px;padding:12px 4px;
+  font:700 13px "Bricolage Grotesque";display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none}
+.sbtn:hover{border-color:var(--fire)}
+.sbtn .i{font-size:22px}
+.duel-box{display:flex;gap:10px}
+.duel-box .field{flex:1}
+
+/* Duel */
+.fighters{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}
+.fighter img{width:min(110px,24vw);height:min(110px,24vw);border-radius:50%;border:4px solid var(--line);background:var(--bg3)}
+.fighter.win img{border-color:var(--fire2);box-shadow:0 0 40px rgba(255,178,31,.5)}
+.fighter b{display:block;font-size:18px;margin-top:8px;word-break:break-all}
+.fighter .pw{font:800 30px "JetBrains Mono";color:var(--mute)}
+.fighter.win .pw{color:var(--fire2)}
+.vs{font-size:40px;font-weight:800;color:var(--fire);animation:flick .3s infinite alternate}
+.crown{font-size:34px;display:block;height:40px}
+.rounds{display:grid;gap:10px;margin-top:22px}
+.round{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  font:700 15px "JetBrains Mono";opacity:0;animation:slide .45s forwards}
+.round .c{font:700 12px "Bricolage Grotesque";color:var(--mute);text-transform:uppercase;letter-spacing:.06em;text-align:center;min-width:90px}
+.round .l{text-align:left}.round .r{text-align:right}
+.round .w{color:var(--fire2)}
+.verdict{margin-top:20px;text-align:center;font-size:22px;font-weight:800;line-height:1.3}
+.verdict span{color:var(--fire2)}
+
+footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:13px;padding:0 16px 40px;line-height:1.7}
+footer a{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--ink);color:var(--bg);font-weight:800;padding:12px 18px;border-radius:12px;transition:transform .3s;z-index:9}
+.toast.on{transform:translate(-50%,0)}
+.embers{position:fixed;inset:0;pointer-events:none;z-index:0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.roast,.round{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas class="embers" id="embers"></canvas>
+<main>
+
+  <!-- ACCUEIL -->
+  <section id="home" class="screen on">
+    <span class="pill">🔥 Aucune connexion · aucun token</span>
+    <h1>Roast mon<br><span class="f">GitHub</span></h1>
+    <p class="lead">Tape un pseudo GitHub. On fouille les repos, les horaires de push et les noms de projets douteux… et on grille le tout. Avec amour. Ou presque.</p>
+    <form id="form" autocomplete="off">
+      <label class="field"><span>@</span><input id="u1" placeholder="ton-pseudo" maxlength="39" spellcheck="false" autocapitalize="off" aria-label="Pseudo GitHub"></label>
+      <button type="button" class="vs-toggle" id="vsToggle">⚔️ <b>Mode duel</b> : affronter un autre dev</button>
+      <label class="field" id="vsField" hidden><span>vs @</span><input id="u2" placeholder="pseudo-du-pote" maxlength="39" spellcheck="false" autocapitalize="off" aria-label="Pseudo de l'adversaire"></label>
+      <button class="btn full" id="go">Allumer le barbecue 🔥</button>
+    </form>
+    <div class="err" id="err"></div>
+    <p class="try">Essaie avec :
+      <button data-u="torvalds">torvalds</button><button data-u="gaearon">gaearon</button><button data-u="sindresorhus">sindresorhus</button><button data-u="CedricPoint">CedricPoint</button>
+    </p>
+  </section>
+
+  <!-- CHARGEMENT -->
+  <section id="loading" class="screen">
+    <div class="loading">
+      <span class="flame">🔥</span>
+      <div class="term" id="term"></div>
+    </div>
+  </section>
+
+  <!-- ROAST -->
+  <section id="result" class="screen">
+    <div class="head">
+      <img id="ava" alt="">
+      <div><h2 id="name"></h2><div class="login" id="login"></div></div>
+    </div>
+    <div class="cook">
+      <div class="lbl">Niveau de cuisson</div>
+      <div class="lvl" id="lvl"></div>
+      <div class="meter" id="meter"><i></i><i></i><i></i><i></i></div>
+      <div class="meter-l"><span>Saignant</span><span>À point</span><span>Bien cuit</span><span>Carbonisé</span></div>
+    </div>
+    <div class="roasts" id="roasts"></div>
+
+    <div class="sec">
+      <h3>Les preuves à charge</h3>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="sec" id="langSec">
+      <h3>Langages</h3>
+      <div class="langs" id="langs"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="sec">
+      <h3>Ta carte de dev</h3>
+      <img class="preview" id="card" alt="Carte de dev à partager">
+      <button class="btn full" id="shareBtn" style="margin-top:16px">📲 Partager mon roast</button>
+      <div class="share">
+        <a class="sbtn" id="sX" target="_blank" rel="noopener"><span class="i">𝕏</span>X</a>
+        <a class="sbtn" id="sLi" target="_blank" rel="noopener"><span class="i">💼</span>LinkedIn</a>
+        <a class="sbtn" id="sWa" target="_blank" rel="noopener"><span class="i">💬</span>WhatsApp</a>
+        <button class="sbtn" id="sDl"><span class="i">🖼️</span>Image</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>⚔️ Défie un pote en duel</h3>
+      <form class="duel-box" id="duelForm" autocomplete="off">
+        <label class="field"><span>@</span><input id="u3" placeholder="pseudo-du-pote" maxlength="39" spellcheck="false" autocapitalize="off" aria-label="Pseudo de l'adversaire"></label>
+        <button class="btn">⚔️</button>
+      </form>
+    </div>
+    <div class="sec"><button class="btn ghost full" id="again">🔥 Griller quelqu'un d'autre</button></div>
+  </section>
+
+  <!-- DUEL -->
+  <section id="duel" class="screen">
+    <span class="pill">⚔️ Duel de devs</span>
+    <div class="fighters">
+      <div class="fighter" id="f1"></div>
+      <div class="vs">VS</div>
+      <div class="fighter" id="f2"></div>
+    </div>
+    <div class="rounds" id="rounds"></div>
+    <p class="verdict" id="verdict"></p>
+    <div class="sec">
+      <img class="preview" id="duelCard" alt="Carte du duel à partager">
+      <button class="btn full" id="duelShare" style="margin-top:16px">📲 Partager le duel</button>
+    </div>
+    <div class="sec" style="display:grid;gap:12px">
+      <button class="btn ghost full" id="seeR1"></button>
+      <button class="btn ghost full" id="seeR2"></button>
+      <button class="btn ghost full" id="again2">🔥 Nouveau roast</button>
+    </div>
+  </section>
+</main>
+<footer>
+  Données publiques de l'API GitHub, rien n'est stocké · Roast = humour, pas de jugement de valeur 🫶<br>
+  <a href="https://github.com/CedricPoint/roast-mon-github" target="_blank" rel="noopener">Code source</a> · par <a href="https://github.com/CedricPoint" target="_blank" rel="noopener">@CedricPoint</a>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const BASE = location.origin + location.pathname;
+const SITE = location.protocol.startsWith('http') ? BASE.replace(/^https?:\/\//, '').replace(/index\.html$/, '') : 'cedricpoint.github.io/roast-mon-github';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => Math.round(n).toLocaleString('fr-FR');
+const pick = a => a[Math.random() * a.length | 0];
+const VALID = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function setUrl(u){ try { history.replaceState(null, '', u); } catch (_) {} }
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400);
+}
+
+/* ---------- API GitHub (publique, sans token : 60 requêtes / heure / IP) ---------- */
+async function gh(path){
+  const r = await fetch('https://api.github.com' + path, {headers: {Accept: 'application/vnd.github+json'}});
+  if (r.status === 404) throw {msg: "Ce pseudo n'existe pas sur GitHub. Vérifie l'orthographe 🧐"};
+  if (r.status === 403 || r.status === 429) throw {msg: "GitHub nous demande de souffler un peu (limite de 60 requêtes / heure par connexion). Réessaie dans quelques minutes ⏳"};
+  if (!r.ok) throw {msg: "GitHub ne répond pas correctement. Réessaie dans un instant."};
+  return r.json();
+}
+
+async function load(login, log = () => {}){
+  const key = 'rmg:' + login.toLowerCase();
+  try { const c = JSON.parse(sessionStorage.getItem(key)); if (c) { log(`cache : @${login}`, true); return c; } } catch (_) {}
+  log(`GET /users/${login}`);
+  const user = await gh(`/users/${encodeURIComponent(login)}`);
+  log(`profil trouvé : ${user.name || user.login}`, true);
+  log(`GET /users/${login}/repos`);
+  const repos = await gh(`/users/${encodeURIComponent(login)}/repos?per_page=100&sort=pushed`);
+  log(`${repos.length} dépôts inspectés`, true);
+  log(`GET /users/${login}/events`);
+  const events = await gh(`/users/${encodeURIComponent(login)}/events/public?per_page=100`).catch(() => []);
+  log(`${events.length} évènements récents`, true);
+  const data = analyze(user, repos, events);
+  try { sessionStorage.setItem(key, JSON.stringify(data)); } catch (_) {}
+  return data;
+}
+
+/* ---------- Analyse ---------- */
+const LANG_COLORS = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',Java:'#b07219',PHP:'#4F5D95','C++':'#f34b7d',C:'#555555','C#':'#178600',
+  Go:'#00ADD8',Rust:'#dea584',Ruby:'#701516',HTML:'#e34c26',CSS:'#563d7c',Shell:'#89e051',Swift:'#F05138',Kotlin:'#A97BFF',Dart:'#00B4AB',
+  Lua:'#000080',Vue:'#41b883','Jupyter Notebook':'#DA5B0B',SCSS:'#c6538c',PowerShell:'#012456',Svelte:'#ff3e00',Elixir:'#6e4a7e',Haskell:'#5e5086'};
+const DAY = 864e5;
+
+function analyze(user, repos, events){
+  const own = repos.filter(r => !r.fork);
+  const forks = repos.length - own.length;
+  const langs = {};
+  own.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
+  const langList = Object.entries(langs).sort((a, b) => b[1] - a[1]);
+  const stars = own.reduce((a, r) => a + r.stargazers_count, 0);
+  const top = [...own].sort((a, b) => b.stargazers_count - a.stargazers_count);
+  const now = Date.now();
+  const dead = own.filter(r => now - new Date(r.pushed_at) > 365 * DAY).length;
+  const noDesc = own.filter(r => !r.description).length;
+  const badName = own.find(r => /^(test|tests?\d*|tmp|temp|untitled|demo|hello[-_]?world|new[-_]?(project|repo)?|my[-_]?(project|app|repo|first)|projet\d*|essai|sandbox|playground|asdf|foo|bar)$/i.test(r.name))
+    || own.find(r => /(final|v2|copy|copie|old|backup|nouveau|-2$|_2$)/i.test(r.name));
+  const pushes = events.filter(e => e.type === 'PushEvent');
+  const hours = pushes.map(e => new Date(e.created_at));
+  const night = hours.filter(d => d.getHours() < 5).length;
+  const weekend = hours.filter(d => d.getDay() === 0 || d.getDay() === 6).length;
+  const lastPush = own.length ? Math.min(...own.map(r => now - new Date(r.pushed_at))) : null;
+  return {
+    login: user.login, name: user.name || user.login, avatar: user.avatar_url, bio: user.bio,
+    followers: user.followers, following: user.following, publicRepos: user.public_repos,
+    years: Math.max(0, (now - new Date(user.created_at)) / (365.25 * DAY)),
+    own: own.length, forks, langList, stars,
+    top: top.slice(0, 2).map(r => ({name: r.name, stars: r.stargazers_count})),
+    dead, noDesc, badName: badName?.name || null,
+    profileReadme: own.some(r => r.name.toLowerCase() === user.login.toLowerCase()),
+    awesome: own.find(r => /^awesome/i.test(r.name))?.name || null,
+    dotfiles: own.some(r => /dotfiles/i.test(r.name)),
+    archived: own.filter(r => r.archived).length,
+    pushes: pushes.length, night, weekend,
+    lastPushDays: lastPush === null ? null : Math.round(lastPush / DAY),
+  };
+}
+
+/* ---------- Le roast ---------- */
+const LANG_ROASTS = {
+  JavaScript: ["JavaScript en langage principal. '1' + 1 = '11', et toi tu trouves ça normal.", "Ton langage principal est JavaScript. Tu as un node_modules plus lourd que ta motivation."],
+  TypeScript: ["TypeScript : tu aimes tellement les erreurs que tu les veux avant même de lancer le code.", "TypeScript partout. Ton code a plus de types que de fonctionnalités."],
+  Python: ["Python en tête. L'indentation, c'est ta religion, et les accolades te font peur.", "Python partout : tu as déjà écrit un script pour ne pas avoir à écrire un script."],
+  Java: ["Java en tête. Tu as déjà écrit AbstractSingletonProxyFactoryBean sans sourciller.", "Java : 40 lignes pour afficher « Hello World », et tu appelles ça de la rigueur."],
+  PHP: ["PHP en langage principal. Respect, il faut du courage en 2026.", "PHP : le langage que tout le monde enterre et qui fait tourner la moitié du web. Comme toi, quoi."],
+  'C++': ["Du C++. Tu gères la mémoire toi-même parce que tu ne fais confiance à personne."],
+  C: ["Du C pur. Tu as déjà fait un segfault rien qu'en regardant ton écran."],
+  'C#': ["C# : comme Java, mais avec la bénédiction de Microsoft."],
+  Go: ["Go : if err != nil { return err }. Voilà, on a résumé ton code."],
+  Rust: ["Rust. Tu l'as déjà dit à combien de personnes aujourd'hui ?", "Rust en tête : le borrow checker et toi, c'est une relation compliquée."],
+  Ruby: ["Ruby en tête. Tu es resté bloqué en 2012 et franchement, c'était une belle époque."],
+  HTML: ["Ton langage principal est HTML. On ne va pas relancer ce débat ici."],
+  CSS: ["Langage principal : CSS. Tu centres une div du premier coup ? Menteur."],
+  Shell: ["Langage principal : Shell. Tu automatises tout, sauf ta vie sociale."],
+  Lua: ["Du Lua en tête. Soit tu fais des jeux, soit des mods FiveM. On a notre petite idée."],
+  'Jupyter Notebook': ["Jupyter Notebook en tête : ton code, c'est 40 cellules exécutées dans le désordre."],
+  Kotlin: ["Kotlin : tu as fui Java, mais Java ne t'a jamais vraiment quitté."],
+  Swift: ["Swift en tête. Tu as payé 2 000 € de Mac pour coder des boutons arrondis."],
+  Dart: ["Dart en langage principal. Les seules personnes qui codent en Dart font du Flutter. Et toi, donc."],
+  PowerShell: ["PowerShell en tête. Tu es la seule personne qui aime vraiment Windows. Respect."],
+  Vue: ["Vue.js : tu voulais React, mais en plus sympa. On comprend."],
+};
+
+function roast(d){
+  const out = []; let heat = 0;
+  const add = (e, t, h = 1) => { out.push({e, t}); heat += h; };
+  const pct = (a, b) => Math.round(a / Math.max(b, 1) * 100);
+  const mainLang = d.langList[0]?.[0];
+
+  if (d.own === 0) add('👻', "0 dépôt perso public. Soit tu codes en secret pour la NSA, soit tu ne codes pas. On a notre petite idée.", 3);
+  if (d.badName) add('🏷️', `Tu as un repo qui s'appelle « ${esc(d.badName)} ». On sent l'ambition et la vision long terme.`, 2);
+  if (d.own >= 4 && d.dead / d.own > .6) add('🪦', `${pct(d.dead, d.own)}% de tes projets n'ont pas bougé depuis plus d'un an. Ton GitHub, c'est un cimetière avec de la coloration syntaxique.`, 2);
+  if (d.own >= 4 && d.noDesc / d.own > .5) add('🤐', `${pct(d.noDesc, d.own)}% de tes repos n'ont aucune description. Le mystère, c'est ta marque de fabrique.`, 1);
+  if (d.forks >= 5 && d.forks > d.own) add('📋', `${d.forks} forks pour ${d.own} projets à toi. Ctrl+C, Ctrl+V, mais avec des étapes.`, 2);
+  if (d.pushes >= 8 && d.night / d.pushes > .25) add('🦉', `${pct(d.night, d.pushes)}% de tes pushs récents entre minuit et 5h. Ton code tourne au café et aux mauvaises décisions.`, 2);
+  if (d.pushes >= 8 && d.weekend / d.pushes > .35) add('🌱', `${pct(d.weekend, d.pushes)}% de tes pushs le week-end. Toucher de l'herbe, ça te dit quelque chose ?`, 1);
+  if (d.following > 20 && d.following > d.followers * 3) add('💔', `Tu suis ${fmt(d.following)} personnes, ${fmt(d.followers)} te suivent. L'amour à sens unique, version open source.`, 2);
+  if (d.own >= 6 && d.stars === 0) add('⭐', `${d.own} repos et 0 étoile. Même ton chat n'a pas cliqué.`, 2);
+  else if (d.own >= 6 && d.stars < d.own / 2) add('⭐', `${fmt(d.stars)} étoile${d.stars > 1 ? 's' : ''} pour ${d.own} repos. Tes projets sont des secrets bien gardés.`, 1);
+  if (d.stars >= 1000) add('🌟', `${fmt(d.stars)} étoiles. OK, t'es connu. Mais on a vu tes noms de branches.`, 0);
+  if (mainLang && LANG_ROASTS[mainLang]) add('💻', pick(LANG_ROASTS[mainLang]), 1);
+  if (d.langList.length >= 8) add('🎪', `${d.langList.length} langages différents. Touche-à-tout, expert en rien ?`, 1);
+  if (d.years >= 7 && d.own < 10) add('🐢', `Inscrit depuis ${Math.floor(d.years)} ans, ${d.own} projets. À ce rythme, ton chef-d'œuvre sortira en 2050.`, 2);
+  if (d.own >= 60) add('🚧', `${d.own} projets perso. Tu en commences combien par semaine, et tu en finis combien ?`, 2);
+  if (d.lastPushDays !== null && d.lastPushDays > 180) add('🧊', `Dernier push il y a ${fmt(d.lastPushDays)} jours. Ton GitHub est en hibernation.`, 2);
+  if (!d.bio) add('📝', "Pas de bio. Minimalisme assumé ou panne d'inspiration ?", 1);
+  if (d.profileReadme) add('🪞', "Tu as un README de profil. Tu as passé plus de temps dessus que sur tes vrais projets, avoue.", 1);
+  if (d.awesome) add('🔗', `Un repo « ${esc(d.awesome)} ». Tu collectionnes les liens comme d'autres les capsules de café.`, 1);
+  if (d.dotfiles) add('🧹', "Un repo dotfiles. Ton terminal est mieux rangé que ta chambre.", 1);
+  if (d.archived >= 3) add('📦', `${d.archived} repos archivés. Tu n'abandonnes pas tes projets, tu les « mets en pause ». Pour toujours.`, 1);
+  if (out.length < 3) add('🧐', "Profil tellement propre que c'en est suspect. Tu caches tes vrais projets en privé, hein ?", 0);
+
+  // garde les plus piquants, mélangés, et termine sur une note positive
+  const roasts = out.sort(() => Math.random() - .5).slice(0, 6);
+  const nice = d.stars >= 50 ? `Bon, ${fmt(d.stars)} étoiles quand même. On t'aime bien ❤️`
+    : d.followers >= 50 ? `${fmt(d.followers)} personnes te suivent. Elles ont sûrement raison ❤️`
+    : d.own >= 10 ? `Mais ${d.own} projets lancés, c'est ${d.own} fois plus que ceux qui en parlent. Respect ❤️`
+    : "Mais tu es là, tu codes, tu partages. C'est déjà plus que 99% des gens ❤️";
+  const level = Math.min(4, Math.max(1, Math.ceil(heat / 3.2)));
+  return {roasts, nice, level};
+}
+const LEVELS = ['', '🥩 Saignant', '🍖 À point', '🔥 Bien cuit', '☠️ Carbonisé'];
+
+/* ---------- Puissance (pour la carte et les duels) ---------- */
+function power(d){
+  const parts = {
+    '⭐ Étoiles': Math.round(Math.log10(d.stars + 1) * 120),
+    '👥 Abonnés': Math.round(Math.log10(d.followers + 1) * 100),
+    '📦 Projets': Math.round(Math.min(d.own, 80) * 2.5),
+    '🎂 Ancienneté': Math.round(Math.min(d.years, 15) * 10),
+    '⚡ Activité': Math.round(Math.min(d.pushes, 100) * 1.2),
+  };
+  return {parts, total: Object.values(parts).reduce((a, b) => a + b, 0)};
+}
+const TYPES = {
+  JavaScript:['⚡','Électrique'], TypeScript:['🛡️','Acier'], Python:['🐍','Poison'], Java:['☕','Feu'], PHP:['🐘','Normal'], 'C++':['🪨','Roche'],
+  C:['🪨','Roche'], 'C#':['🔮','Psy'], Go:['🐹','Vol'], Rust:['🦀','Acier'], Ruby:['💎','Fée'], HTML:['🎨','Normal'], CSS:['🎨','Fée'],
+  Shell:['🐚','Eau'], Lua:['🌙','Spectre'], Kotlin:['🧪','Psy'], Swift:['🦅','Vol'], Dart:['🎯','Combat'], 'Jupyter Notebook':['📊','Psy'], PowerShell:['💠','Eau'],
+};
+const typeOf = d => TYPES[d.langList[0]?.[0]] || ['✨', 'Normal'];
+
+/* ---------- Écran chargement ---------- */
+function termLog(){
+  const t = $('term'); t.innerHTML = '';
+  return (msg, ok) => { t.insertAdjacentHTML('beforeend', `<div class="${ok ? 'ok' : ''}">${ok ? '✓' : '$'} ${esc(msg)}</div>`); };
+}
+
+/* ---------- Roast : affichage ---------- */
+let current = null;
+async function runRoast(login){
+  $('err').textContent = '';
+  show('loading');
+  const log = termLog();
+  try {
+    const d = await load(login, log);
+    log('préchauffage du barbecue…'); await sleep(700);
+    log('roast prêt. Ça va piquer.', true); await sleep(500);
+    current = d;
+    setUrl(BASE + '?u=' + encodeURIComponent(d.login));
+    renderRoast(d);
+  } catch (e) {
+    show('home');
+    $('err').textContent = e.msg || "Oups, quelque chose a brûlé. Réessaie.";
+  }
+}
+
+function renderRoast(d){
+  const r = roast(d);
+  d._roast = r;
+  $('ava').src = d.avatar + '&s=168';
+  $('name').textContent = d.name;
+  $('login').textContent = '@' + d.login;
+  $('lvl').textContent = LEVELS[r.level];
+  [...$('meter').children].forEach((m, k) => m.classList.toggle('on', k < r.level));
+  $('roasts').innerHTML = [...r.roasts.map(x => `<div class="roast"><span class="e">${x.e}</span>${x.t}</div>`),
+    `<div class="roast nice"><span class="e">🫶</span>${esc(r.nice)}</div>`]
+    .map((h, k) => h.replace('class="roast', `style="animation-delay:${.15 + k * .35}s" class="roast`)).join('');
+  const st = [
+    [fmt(d.own), 'projets perso'], [fmt(d.stars), 'étoiles'], [fmt(d.followers), 'abonnés'],
+    [Math.floor(d.years) + ' ans', 'sur GitHub'], [fmt(d.forks), 'forks'],
+    [d.pushes ? Math.round(d.night / d.pushes * 100) + '%' : '—', 'pushs nocturnes'],
+  ];
+  $('stats').innerHTML = st.map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+  const total = d.langList.reduce((a, l) => a + l[1], 0);
+  $('langSec').hidden = !total;
+  const shown = d.langList.slice(0, 6);
+  $('langs').innerHTML = shown.map(([l, n]) => `<i style="width:${n / total * 100}%;background:${LANG_COLORS[l] || '#8a7a70'}"></i>`).join('');
+  $('legend').innerHTML = shown.map(([l, n]) => `<span><i style="background:${LANG_COLORS[l] || '#8a7a70'}"></i>${esc(l)} ${Math.round(n / total * 100)}%</span>`).join('');
+  show('result');
+  setupRoastShare(d);
+}
+
+/* ---------- Partage ---------- */
+function shareLinks(prefix, txt, url){
+  $(prefix + 'X') && ($(prefix + 'X').href = 'https://x.com/intent/post?text=' + encodeURIComponent(txt) + '&url=' + encodeURIComponent(url));
+  $(prefix + 'Li') && ($(prefix + 'Li').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url));
+  $(prefix + 'Wa') && ($(prefix + 'Wa').href = 'https://wa.me/?text=' + encodeURIComponent(txt + ' ' + url));
+}
+async function nativeShare(canvas, name, txt, url){
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+  const file = blob && new File([blob], name, {type: 'image/png'});
+  try {
+    if (file && navigator.canShare?.({files: [file]})) await navigator.share({files: [file], text: txt + ' ' + url});
+    else if (navigator.share) await navigator.share({title: 'Roast mon GitHub', text: txt, url});
+    else { await navigator.clipboard.writeText(txt + ' ' + url); toast('Lien copié ! 📋'); }
+  } catch (_) {}
+}
+async function setupRoastShare(d){
+  const url = BASE + '?u=' + encodeURIComponent(d.login);
+  const txt = `Mon GitHub s'est fait griller : ${LEVELS[d._roast.level]} 🔥 Ose tester le tien :`;
+  shareLinks('s', txt, url);
+  const c = await drawCard(d);
+  $('card').src = c.toDataURL('image/png');
+  $('shareBtn').onclick = () => nativeShare(c, `roast-${d.login}.png`, txt, url);
+  $('sDl').onclick = () => { const a = document.createElement('a'); a.href = $('card').src; a.download = `roast-${d.login}.png`; a.click(); toast('Image téléchargée 🖼️'); };
+}
+
+/* ---------- Dessin des cartes ---------- */
+function loadImg(src){
+  return new Promise(res => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+}
+function rr(g, x, y, w, h, r){ g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, r) : g.rect(x, y, w, h); }
+function fit(g, txt, weight, size, max, fam = '"Bricolage Grotesque"'){
+  do { g.font = `${weight} ${size}px ${fam}`; size -= 2; } while (g.measureText(txt).width > max && size > 14);
+}
+function wrap(g, txt, x, y, max, lh, lines = 3){
+  const words = txt.split(' '); let line = '', n = 0;
+  for (const w of words) {
+    const t = line ? line + ' ' + w : w;
+    if (g.measureText(t).width > max && line) { g.fillText(line, x, y + n * lh); line = w; if (++n >= lines) return; }
+    else line = t;
+  }
+  g.fillText(line, x, y + n * lh);
+}
+function circleImg(g, img, cx, cy, r, ring){
+  g.save(); g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.clip();
+  if (img) g.drawImage(img, cx - r, cy - r, r * 2, r * 2); else { g.fillStyle = '#2a1f1a'; g.fill(); }
+  g.restore(); g.lineWidth = 10; g.strokeStyle = ring; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+}
+
+async function drawCard(d){
+  await document.fonts.ready;
+  const W = 1080, H = 1500, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'), p = power(d), [te, tn] = typeOf(d), r = d._roast;
+  const hp = Math.min(990, Math.max(30, Math.round(p.total / 10) * 10));
+  // cadre façon carte à collectionner
+  const bg = g.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#ffcf3f'); bg.addColorStop(1, '#ff7a1f');
+  g.fillStyle = bg; rr(g, 0, 0, W, H, 56); g.fill();
+  const inner = g.createLinearGradient(0, 0, 0, H); inner.addColorStop(0, '#2a1a12'); inner.addColorStop(1, '#120c0a');
+  g.fillStyle = inner; rr(g, 34, 34, W - 68, H - 68, 36); g.fill();
+  // en-tête
+  g.fillStyle = '#fbefe6'; fit(g, d.name, 800, 72, 640); g.textAlign = 'left'; g.fillText(d.name, 80, 140);
+  g.textAlign = 'right'; g.fillStyle = '#ff5a1f'; g.font = '800 38px "JetBrains Mono"'; g.fillText('PV', W - 230, 140);
+  g.fillStyle = '#fbefe6'; g.font = '800 72px "Bricolage Grotesque"'; g.fillText(hp, W - 80, 140);
+  g.textAlign = 'left'; g.fillStyle = '#b49d90'; g.font = '600 32px "JetBrains Mono"'; g.fillText('@' + d.login, 80, 190);
+  // illustration
+  const art = g.createRadialGradient(W / 2, 470, 40, W / 2, 470, 420); art.addColorStop(0, '#ff7a1f'); art.addColorStop(1, '#3a1d10');
+  g.fillStyle = art; rr(g, 80, 230, W - 160, 470, 24); g.fill();
+  g.lineWidth = 6; g.strokeStyle = '#ffcf3f'; rr(g, 80, 230, W - 160, 470, 24); g.stroke();
+  circleImg(g, await loadImg(d.avatar + '&s=400'), W / 2, 450, 170, '#ffcf3f');
+  // bandeau type
+  g.fillStyle = 'rgba(0,0,0,.55)'; rr(g, 110, 620, 380, 60, 30); g.fill();
+  g.fillStyle = '#fbefe6'; g.font = '700 32px "Bricolage Grotesque"'; g.fillText(`${te} Type ${tn}`, 135, 662);
+  g.textAlign = 'right'; g.fillStyle = 'rgba(0,0,0,.55)'; rr(g, W - 450, 620, 340, 60, 30); g.fill();
+  g.fillStyle = '#fbefe6'; g.fillText(LEVELS[r.level], W - 135, 662); g.textAlign = 'left';
+  // attaques = meilleurs repos
+  const atks = d.top.length ? d.top : [{name: 'Hello World', stars: 0}];
+  atks.slice(0, 2).forEach((a, k) => {
+    const y = 790 + k * 120;
+    g.fillStyle = '#fbefe6'; fit(g, a.name, 800, 46, 640); g.fillText(a.name, 80, y);
+    g.fillStyle = '#b49d90'; g.font = '500 26px "JetBrains Mono"'; g.fillText(k ? 'attaque secondaire' : 'attaque signature', 80, y + 40);
+    g.textAlign = 'right'; g.fillStyle = '#ffb21f'; g.font = '800 54px "Bricolage Grotesque"';
+    g.fillText(Math.max(10, Math.round((Math.log10(a.stars + 1) * 60 + 10) / 10) * 10), W - 80, y + 10); g.textAlign = 'left';
+    g.strokeStyle = '#3a2b24'; g.lineWidth = 2; g.beginPath(); g.moveTo(80, y + 72); g.lineTo(W - 80, y + 72); g.stroke();
+  });
+  // le roast vedette
+  g.fillStyle = 'rgba(255,90,31,.12)'; rr(g, 80, 1040, W - 160, 230, 22); g.fill();
+  g.fillStyle = '#ff5a1f'; g.font = '700 26px "JetBrains Mono"'; g.fillText('🔥 LE ROAST', 110, 1090);
+  const star = r.roasts.find(x => x.t.length < 140) || r.roasts[0];
+  const plain = (star?.t || '').replace(/&[a-z#0-9]+;/gi, m => ({'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'"}[m] || m));
+  g.fillStyle = '#fbefe6'; g.font = '600 36px "Bricolage Grotesque"'; wrap(g, plain, 110, 1145, W - 220, 46, 3);
+  // pied
+  g.fillStyle = '#b49d90'; g.font = '600 26px "JetBrains Mono"';
+  g.fillText(`⭐ ${fmt(d.stars)}   👥 ${fmt(d.followers)}   📦 ${fmt(d.own)}   ⚡ ${fmt(p.total)}`, 80, 1335);
+  g.fillStyle = '#ffb21f'; g.font = '700 30px "JetBrains Mono"'; g.textAlign = 'center';
+  g.fillText('🔥 ' + SITE, W / 2, 1420);
+  return c;
+}
+
+async function drawDuel(a, b, pa, pb){
+  await document.fonts.ready;
+  const W = 1080, H = 1080, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const bg = g.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#2a1a12'); bg.addColorStop(1, '#120c0a');
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  const glow = g.createRadialGradient(W / 2, H, 50, W / 2, H, 700); glow.addColorStop(0, 'rgba(255,90,31,.45)'); glow.addColorStop(1, 'transparent');
+  g.fillStyle = glow; g.fillRect(0, 0, W, H);
+  g.textAlign = 'center'; g.fillStyle = '#ffb21f'; g.font = '700 34px "JetBrains Mono"'; g.fillText('⚔️ DUEL DE DEVS', W / 2, 100);
+  const [ia, ib] = await Promise.all([loadImg(a.avatar + '&s=400'), loadImg(b.avatar + '&s=400')]);
+  const winA = pa.total >= pb.total;
+  [[a, pa, ia, 270, winA], [b, pb, ib, W - 270, !winA]].forEach(([d, p, img, x, win]) => {
+    if (win) { g.font = '90px serif'; g.fillText('👑', x, 250); }
+    circleImg(g, img, x, 420, 150, win ? '#ffb21f' : '#3a2b24');
+    g.fillStyle = '#fbefe6'; fit(g, '@' + d.login, 800, 50, 420); g.fillText('@' + d.login, x, 650);
+    g.fillStyle = win ? '#ffb21f' : '#b49d90'; g.font = '800 96px "JetBrains Mono"'; g.fillText(fmt(p.total), x, 770);
+  });
+  g.fillStyle = '#ff5a1f'; g.font = '800 90px "Bricolage Grotesque"'; g.fillText('VS', W / 2, 450);
+  const w = winA ? a : b, gap = Math.abs(pa.total - pb.total);
+  g.fillStyle = '#fbefe6'; g.font = '800 46px "Bricolage Grotesque"';
+  fit(g, `@${w.login} gagne de ${fmt(gap)} points`, 800, 46, W - 120); g.fillText(`@${w.login} gagne de ${fmt(gap)} points`, W / 2, 900);
+  g.fillStyle = '#ffb21f'; g.font = '700 30px "JetBrains Mono"'; g.fillText('Défie tes potes 👉 ' + SITE, W / 2, 1010);
+  return c;
+}
+
+/* ---------- Duel ---------- */
+async function runDuel(l1, l2){
+  $('err').textContent = '';
+  if (l1.toLowerCase() === l2.toLowerCase()) { $('err').textContent = "Se battre contre soi-même, c'est profond… mais choisis un autre adversaire 😄"; show('home'); return; }
+  show('loading');
+  const log = termLog();
+  try {
+    const a = await load(l1, log), b = await load(l2, log);
+    log('les deux combattants entrent dans l\'arène…', true); await sleep(800);
+    a._roast = roast(a); b._roast = roast(b);
+    setUrl(BASE + '?u=' + encodeURIComponent(a.login) + '&vs=' + encodeURIComponent(b.login));
+    renderDuel(a, b);
+  } catch (e) {
+    show('home'); $('err').textContent = e.msg || "Oups, quelque chose a brûlé. Réessaie.";
+  }
+}
+
+function renderDuel(a, b){
+  const pa = power(a), pb = power(b), winA = pa.total >= pb.total;
+  const f = (d, p, win) => `<span class="crown">${win ? '👑' : ''}</span><img src="${esc(d.avatar)}&s=220" alt=""><b>@${esc(d.login)}</b><div class="pw" data-to="${p.total}">0</div>`;
+  $('f1').className = 'fighter' + (winA ? ' win' : ''); $('f1').innerHTML = f(a, pa, winA);
+  $('f2').className = 'fighter' + (winA ? '' : ' win'); $('f2').innerHTML = f(b, pb, !winA);
+  $('rounds').innerHTML = Object.keys(pa.parts).map((k, i) => {
+    const x = pa.parts[k], y = pb.parts[k];
+    return `<div class="round" style="animation-delay:${.2 + i * .3}s"><span class="l ${x >= y ? 'w' : ''}">${fmt(x)}</span><span class="c">${k}</span><span class="r ${y >= x ? 'w' : ''}">${fmt(y)}</span></div>`;
+  }).join('');
+  const w = winA ? a : b, l = winA ? b : a, gap = Math.abs(pa.total - pb.total);
+  $('verdict').innerHTML = gap < 40
+    ? `Match serré ! <span>@${esc(w.login)}</span> l'emporte d'un cheveu (${fmt(gap)} pts).`
+    : `<span>@${esc(w.login)}</span> met une raclée à @${esc(l.login)} (+${fmt(gap)} pts) 🔥`;
+  $('seeR1').textContent = `🔥 Voir le roast de @${a.login}`;
+  $('seeR2').textContent = `🔥 Voir le roast de @${b.login}`;
+  $('seeR1').onclick = () => { current = a; setUrl(BASE + '?u=' + encodeURIComponent(a.login)); renderRoast(a); };
+  $('seeR2').onclick = () => { current = b; setUrl(BASE + '?u=' + encodeURIComponent(b.login)); renderRoast(b); };
+  show('duel');
+  // compteur animé
+  document.querySelectorAll('.pw').forEach(el => {
+    const to = +el.dataset.to, t0 = performance.now();
+    const step = t => { const k = Math.min(1, (t - t0) / 1600); el.textContent = fmt(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+  const url = BASE + '?u=' + encodeURIComponent(a.login) + '&vs=' + encodeURIComponent(b.login);
+  const txt = `⚔️ Duel GitHub : @${w.login} bat @${l.login} de ${fmt(gap)} points. À qui le tour ?`;
+  drawDuel(a, b, pa, pb).then(c => {
+    $('duelCard').src = c.toDataURL('image/png');
+    $('duelShare').onclick = () => nativeShare(c, `duel-${a.login}-vs-${b.login}.png`, txt, url);
+  });
+}
+
+/* ---------- Évènements ---------- */
+function clean(v){ return v.trim().replace(/^@/, '').replace(/^https?:\/\/(www\.)?github\.com\//i, '').split('/')[0]; }
+$('vsToggle').onclick = () => { $('vsField').hidden = !$('vsField').hidden; if (!$('vsField').hidden) $('u2').focus(); };
+$('form').onsubmit = e => {
+  e.preventDefault();
+  const a = clean($('u1').value), b = clean($('u2').value);
+  if (!VALID.test(a)) { $('err').textContent = "Entre un pseudo GitHub valide (lettres, chiffres, tirets)."; return; }
+  if (!$('vsField').hidden && b) {
+    if (!VALID.test(b)) { $('err').textContent = "Le pseudo de l'adversaire n'est pas valide."; return; }
+    runDuel(a, b);
+  } else runRoast(a);
+};
+$('duelForm').onsubmit = e => {
+  e.preventDefault();
+  const b = clean($('u3').value);
+  if (!VALID.test(b)) { toast('Pseudo invalide'); return; }
+  runDuel(current.login, b);
+};
+document.querySelectorAll('.try button').forEach(b => b.onclick = () => { $('u1').value = b.dataset.u; runRoast(b.dataset.u); });
+const home = () => { setUrl(BASE); $('u1').value = ''; $('u2').value = ''; $('u3').value = ''; show('home'); $('u1').focus(); };
+$('again').onclick = home; $('again2').onclick = home;
+
+/* ---------- Braises ---------- */
+(function embers(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c = $('embers'), g = c.getContext('2d');
+  const resize = () => { c.width = innerWidth; c.height = innerHeight; };
+  resize(); addEventListener('resize', resize);
+  const parts = Array.from({length: 40}, () => ({x: Math.random(), y: Math.random(), s: 1 + Math.random() * 2.5, v: .2 + Math.random() * .6, o: Math.random()}));
+  (function tick(){
+    g.clearRect(0, 0, c.width, c.height);
+    parts.forEach(p => {
+      p.y -= p.v / c.height * 2; p.x += Math.sin(p.y * 20 + p.o * 6) * .0006;
+      if (p.y < -.02) { p.y = 1.02; p.x = Math.random(); }
+      g.fillStyle = `rgba(255,${120 + p.o * 80 | 0},31,${.25 + p.o * .5})`;
+      g.beginPath(); g.arc(p.x * c.width, p.y * c.height, p.s, 0, Math.PI * 2); g.fill();
+    });
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* ---------- Lien partagé ---------- */
+const qs = new URLSearchParams(location.search);
+const qu = clean(qs.get('u') || ''), qv = clean(qs.get('vs') || '');
+if (VALID.test(qu) && VALID.test(qv)) runDuel(qu, qv);
+else if (VALID.test(qu)) runRoast(qu);
+</script>
+</body>
+</html>
